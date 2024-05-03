@@ -4,6 +4,7 @@ import SignUp from "./components/SignUp.vue";
 import TeacherPage from "./components/TeacherPage.vue";
 import StudentPage from "./components/StudentPage.vue";
 import CustomTable from "./components/CustomTable.vue";
+import FinalComp from "./components/FinalComp.vue";
 
 const routes = [
   { path: "/login", component: Login },
@@ -11,6 +12,7 @@ const routes = [
   { path: "/teacher", component: TeacherPage },
   { path: "/student", component: StudentPage },
   { path: "/table", component: CustomTable },
+  { path: "/createCertificate", component: FinalComp },
 ];
 
 const router = createRouter({

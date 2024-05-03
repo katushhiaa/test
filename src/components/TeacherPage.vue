@@ -6,7 +6,10 @@
           <div class="teacherContainer">
             <div class="students-container">
               <b-table
+                id="students-table"
                 :items="students"
+                :per-page="perPage"
+                :current-page="currentTablePage"
                 :fields="fields"
                 select-mode="multi"
                 responsive="sm"
@@ -14,29 +17,19 @@
                 selectable
                 @row-selected="onRowSelected"
                 @row-unselected="onRowUnselected"
-                :per-page="10"
               >
               </b-table>
               <div class="overflow-auto">
-                <!-- Use text in props -->
                 <b-pagination
                   v-model="currentPage"
-                  :total-rows="students.length"
-                  :per-page="10"
+                  :total-rows="rows"
+                  :per-page="perPage"
                   first-text="First"
                   prev-text="Prev"
                   next-text="Next"
                   last-text="Last"
+                  aria-controls="my-table"
                 >
-                  <template #ellipsis-text>
-                    <b-spinner small type="grow"></b-spinner>
-                    <b-spinner small type="grow"></b-spinner>
-                    <b-spinner small type="grow"></b-spinner>
-                  </template>
-                  <template #page="{ page, active }">
-                    <b v-if="active">{{ page }}</b>
-                    <i v-else>{{ page }}</i>
-                  </template>
                 </b-pagination>
               </div>
               <p>
@@ -108,15 +101,17 @@ export default defineComponent({
   },
   data() {
     return {
-      currentPage: 2,
+      currentPage: 1,
       data: {
         title: "",
         duration: "",
         teacherSurname: "",
       },
+      perPage: 5,
+      currentTablePage: 1,
       students: [],
       selectedStudents: [],
-      fields: ["student_name"],
+      fields: ["name"],
     };
   },
   computed: {
@@ -132,28 +127,19 @@ export default defineComponent({
       try {
         const response = await Network.getAllStudents();
         console.log("This is response: ", response);
-        this.students = response.data.map((student) => ({
-          student_name: student.name,
-        }));
-        console.log(this.students);
+        this.students = response.data.map((student) => student);
+        console.log("Students ", this.students);
       } catch (error) {
         console.error("Error fetching students:", error);
       }
     },
     onRowSelected(student) {
-      const index = this.selectedStudents.findIndex(
-        (selectedStudent) =>
-          selectedStudent.student_name === student.student_name
-      );
-      if (index === -1) {
-        this.selectedStudents.push(student);
-      }
+      this.selectedStudents.push(student);
       console.log(this.selectedStudents);
     },
     onRowUnselected(student) {
       const index = this.selectedStudents.findIndex(
-        (selectedStudent) =>
-          selectedStudent.student_name === student.student_name
+        (selectedStudent) => selectedStudent.name === student.name
       );
       if (index !== -1) {
         this.selectedStudents.splice(index, 1);
