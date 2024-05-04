@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 
 const app = express();
+let students = [];
+let certificates = [];
 
 app.use(express.json());
 app.use(cors());
@@ -21,7 +23,15 @@ const userSchema = new mongoose.Schema({
   password: String,
   role: String,
 });
+
+const certificateSchema = new mongoose.Schema({
+  title: String,
+  duration: String,
+  teacherSurname: String,
+});
+
 const User = mongoose.model("User", userSchema);
+const Certificate = mongoose.model("Certificate", certificateSchema);
 
 app.post("/signup", async (req) => {
   const { name, email, password, role } = req.body;
@@ -54,9 +64,31 @@ app.post("/login", async (req) => {
   }
 });
 
-app.get("/students", async (res) => {
+app.post("/certificateData", async (req) => {
+  const { title, duration, teacherSurname } = req.body;
   try {
-    const students = await User.find({ role: "student" });
+    const newCertificate = new Certificate({ title, duration, teacherSurname });
+    console.log(newCertificate);
+    await newCertificate.save();
+    console.log("Дані успішно додано");
+  } catch (error) {
+    console.error(error);
+    return console.log("Помилка сервера");
+  }
+});
+
+app.get("/getCertData", async (req, res) => {
+  try {
+    certificates = await Certificate.find();
+    res.status(200).json(certificates);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.get("/students", async (req, res) => {
+  try {
+    students = await User.find({ role: "student" });
     console.log(students);
     res.status(200).json(students);
   } catch (error) {

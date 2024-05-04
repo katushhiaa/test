@@ -44,7 +44,7 @@
         <div class="col-md-6">
           <div class="form-wrapper">
             <h2>Введіть дані сертифікату</h2>
-            <form @submit.prevent="generateCertificate">
+            <form @submit.prevent="submitCertForm">
               <div class="mb-3">
                 <input
                   v-model="data.title"
@@ -128,6 +128,7 @@ export default defineComponent({
         const response = await Network.getAllStudents();
         console.log("This is response: ", response);
         this.students = response.data.map((student) => student);
+        console.log("Students ", this.students.length);
         console.log("Students ", this.students);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -152,6 +153,16 @@ export default defineComponent({
     clearSelected() {
       this.$refs.selectableTable.clearSelected();
       this.selectedStudents = [];
+    },
+
+    async submitCertForm() {
+      console.log("Form submitted with data:", this.data);
+      try {
+        const response = await Network.certificateDate(this.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 });

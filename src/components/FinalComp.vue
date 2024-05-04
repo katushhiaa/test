@@ -53,15 +53,12 @@ export default defineComponent({
         { image: "src/components/img/template8.png" },
         { image: "src/components/img/template9.png" },
       ],
-      // carousel settings
     };
   },
   methods: {
     chooseTemplate(event) {
       const file = event.target.files[0];
       if (file) {
-        // Прийнято файл, обробляємо його тут
-        // Наприклад, можемо створити URL для зображення та додати його до масиву templates
         const imageUrl = URL.createObjectURL(file);
         this.templates.push({ image: imageUrl });
         console.log(this.templates);
@@ -81,7 +78,7 @@ export default defineComponent({
 }
 .carousel__item img {
   max-width: 100%;
-  max-height: 600px;
+  max-height: 300px;
 }
 
 .input-box.button {
